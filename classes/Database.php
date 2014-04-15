@@ -264,6 +264,28 @@ class Database {
 		return $isToday;
 	}
 	
+	public function datesToUpdate($dates){
+	
+		$toUpdate = array();
+		
+		$last = $this->lastDayInDb();
+		$last = strtotime($last);
+		$last = date("ymd", $last);	
+		
+		if(!empty($dates))
+		{
+			foreach($dates as $date)
+			{			
+				if( $this->isToday($date) && ($date > $last) )
+				{
+					$toUpdate[] = $date;
+				}				
+			}
+		}
+		
+		return $toUpdate;		
+	}
+	
 	// Get all categories and arrange them by language
 	public function getCategories(){
 	
@@ -312,17 +334,20 @@ class Database {
 		global $wpdb;
 
 		$ok = 0;
-
-		foreach($categories as $cat)
-		{ 
-			$category = $this->cleanString($cat);
-			
-			$result   = $this->findCategory($category);
-			
-			if( !$result )
-			{
-				$this->insertCategory($category);
-			}		
+		
+		if(!empty($categories))
+		{
+			foreach($categories as $cat)
+			{ 
+				$category = $this->cleanString($cat);
+				
+				$result   = $this->findCategory($category);
+				
+				if( !$result )
+				{
+					$this->insertCategory($category);
+				}		
+			}			
 		}
 		 
 		return true;
@@ -364,7 +389,7 @@ class Database {
 	public function arrangeArret($arrets){
 
 		$preparedArret = array();
-		$subCategories = array();
+		$subcategory   = array();
 		
 		// categories list
 		$categories = $this->getCategories();		
@@ -408,7 +433,7 @@ class Database {
 			 }
 		  }
 			
-		  return array('arrets' => $preparedArret);
+		  return $preparedArret;
 	}
 	
 	public function organiserArret($arret){

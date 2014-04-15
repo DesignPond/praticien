@@ -189,9 +189,7 @@ class FunctionTest extends PHPUnit_Framework_TestCase
 			)                   
 		);
 				
-		$result = $this->database->arrangeArret($arret);
-		
-		$actual = $result['arrets'];
+		$actual = $this->database->arrangeArret($arret);
 		
 		$this->assertEquals($expect,$actual);
 	
