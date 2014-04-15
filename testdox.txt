@@ -1,0 +1,24 @@
+Function
+ [x] Get title o f page
+ [x] Arrange array from table
+ [x] Is arret a publication
+ [x] Is not arret a publication
+ [x] Format date from string
+ [x] Unique array
+ [x] Clean string simple
+ [x] Clean string database
+ [x] Percentage similar string
+ [x] Soundex similar category
+ [x] Arrange arret with infos
+ [x] Arrange arret for insert
+ [x] Arrange subcategorie for insert
+ [x] Insert new arret in database
+ [x] Insert new subcategory
+ [x] Category dont exist in db
+ [x] Category exist in db
+ [x] Inser new category in db
+ [x] Flatten array
+ [x] Update text arret
+ [x] Prepare search for query
+ [x] Last day in db is today
+

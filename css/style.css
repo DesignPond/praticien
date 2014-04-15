@@ -1,0 +1,165 @@
+
+	
+/***************************
+	checkboxes
+***************************/
+
+.checklist {
+list-style: none;
+margin: 0;
+padding: 0;
+}
+ 
+.checklist li {
+float: left;
+list-style: none;
+margin-right:20px;
+margin-bottom: 20px;
+background: url(../images/bg.png) no-repeat 0 0;
+width: 205px;
+height: 100px;
+padding: 0 10px 0 10px;
+position: relative;
+color: #000;
+font-family: Arial ,Sans-serif;
+}
+ 
+.checklist li.selected {
+background-position: -225px 0;
+color: #fff;
+}
+ 
+.checklist li.selected .checkbox-select {
+display: none;
+}
+ 
+.checkbox-select {
+display: block;
+float: left;
+position: absolute;
+top: 65px;
+left: 10px;
+width: 205px;
+height: 30px;
+background: url(../images/button.png) no-repeat 0 0;
+text-indent: -9999px;
+}
+ 
+.checklist li input {
+display: none;
+}
+
+.checklist li a{
+	text-decoration:none;
+	border:none;
+	}
+ 
+a.checkbox-deselect {
+display: none;
+color: white;
+font-weight: bold;
+font-size: 12px;
+text-decoration: none;
+position: absolute;
+top: 70px;
+right: 20px;
+}
+ 
+.checklist li.selected a.checkbox-deselect {
+display: block;
+}
+ 
+.checklist li label {
+display: block;
+text-align: center;
+padding: 8px;
+font-size:14px;
+line-height: 16px;
+word-wrap: break-word;
+}
+ 
+.sendit {
+display: block;
+clear: both;
+top: 58px;
+left: 10px;
+width: 115px;
+height: 34px;
+border: 0;
+cursor: pointer;
+background: url(../images/sendit.gif) no-repeat 0 0;
+text-indent: -9999px;
+margin: 20px 0;
+}
+
+table.minitable{
+	width:430px;
+	}
+	
+	.tablenav .tablenav-pages{
+		float:left;
+		}
+		
+	.tablenav .tablenav-pages a, .tablenav-pages span.current {
+   	 margin:0 2px;
+	}
+	
+	
+	.tablenav {
+	    margin: 6px 0 10px 4px;
+	}
+
+	table.widefat tbody td{
+		padding:5px 10px;
+		}
+
+p.clear{
+clear: both;
+}
+
+p.wps_button{
+	clear:both;
+	margin-top:10px;
+	display:block;
+	text-align:right;
+	}
+	
+#wpsEditForm{
+	width:600px;
+	}
+	
+ul.wps_form{
+	display:block;
+	}
+	
+ul.wps_form li{
+	margin:20px;
+	display:block;
+	clear:both;
+	padding: 10px 0;
+	line-height:30px;
+}
+
+ul.wps_form li label{
+	width:150px;
+	display:block;
+	float:left;
+}
+
+form ul.wps_form li input{
+	width:250px;
+	display:block;
+	float:left;
+}
+
+
+form ul.wps_form li input.mydatepicker{
+	width: 80px;
+}
+
+form ul.wps_form textarea {
+	margin: 0;
+    padding: 0;
+    line-height: 20px;
+}
+
