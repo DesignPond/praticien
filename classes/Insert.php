@@ -36,33 +36,26 @@ class Insert{
 	
 	public function insert(){
 		
-		global $wpdb;
+		$arrets   = array();
+		$arranged = array();
 		
-		$arrets      = array();
-		$newInserted = array();
-		
-		// Get list of dates from TF
-		
+		// Get list of dates from TF		
 		$dates = $this->grab->getLastDates($this->urlList);
 
-		// Test if there's today's date in the list and if not in the database already
-				
+		// Test if there's today's date in the list and if not in the database already				
 		$toInsert = $this->dates->datesToUpdate($dates);
 		
 		if(!empty($toInsert))
 		{
 			foreach($toInsert as $list)
 			{	
-				// Grab list of arrets for the date in list	
-														
+				// Grab list of arrets for the date in list															
 				$arrets = $this->grab->getListDecisions($this->urlList, $list);	
 				
 				// Clean all arrets for each date
-				
 				$result = $this->arrange->cleanFormat($arrets , $list);
 				
 				// Update category list in DB				
-
 				if(!empty($result['allCategories']))
 				{
 					$this->database->existCategorie($result['allCategories']);
@@ -76,11 +69,6 @@ class Insert{
 
 				if(!empty($arranged))
 				{
-														
-					echo '<pre>';
-					print_r($arranged);
-					echo '</pre>';	
-					
 					// Insert new arrets
 					if( $this->database->insertNewArrets($arranged) === false)
 					{
@@ -88,11 +76,11 @@ class Insert{
 					}						
 				}		
 			}
-		}
-		
-		return true;
 			
-	}
-		
+			return true;
+		}
+
+		return false;	
+	}	
 	
 }

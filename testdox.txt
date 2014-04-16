@@ -1,13 +1,11 @@
-Function
- [x] Get title o f page
+Arrange
  [x] Arrange array from table
  [x] Is arret a publication
  [x] Is not arret a publication
  [x] Format date from string
  [x] Unique array
- [x] Clean string simple
- [x] Clean string database
- [x] Percentage similar string
+
+Database
  [x] Soundex similar category
  [x] Arrange arret with infos
  [x] Arrange arret for insert
@@ -17,8 +15,20 @@ Function
  [x] Category dont exist in db
  [x] Category exist in db
  [x] Inser new category in db
- [x] Flatten array
+
+Date
+ [x] Last day in db is today
+
+Grab
+ [x] Get title o f page
+
+Update
  [x] Update text arret
  [x] Prepare search for query
- [x] Last day in db is today
+
+Utils
+ [x] Clean string simple
+ [x] Clean string database
+ [x] Percentage similar string
+ [x] Flatten array
 

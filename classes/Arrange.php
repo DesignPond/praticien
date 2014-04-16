@@ -3,10 +3,6 @@
 require_once( plugin_dir_path( __FILE__ ) . '../simple_html_dom.php');
 
 class Arrange {
-
-	function __construct() {
-		
-	}
 	
 	public function imap_utf8_fix($string) {
 		

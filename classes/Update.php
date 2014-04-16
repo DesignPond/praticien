@@ -20,6 +20,8 @@ class Update{
 	protected $updated_table;
 	
 	// Urls
+	protected $urlRoot;
+	
 	protected $urlArret;
 	
 	function __construct( $test = null ) {
@@ -39,6 +41,8 @@ class Update{
 		$this->updated_table       = 'wp_updated';
 		
 		// Urls
+		$this->urlRoot  = 'http://relevancy.bger.ch';
+				
 		$this->urlArret = 'http://relevancy.bger.ch/php/aza/http/index.php?lang=fr&zoom=&type=show_document&highlight_docid=aza%3A%2F%2F';
 						
 	}

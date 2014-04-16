@@ -10,9 +10,9 @@ class Dates {
 
 	function __construct( $test = null) {
 		
-		$this->nouveautes_table = 'wp_nouveautes';
+		$this->nouveautes_table = 'wp_nouveautes_test';
 			
-		$this->urlArret = 'http://relevancy.bger.ch/php/aza/http/index.php?lang=fr&zoom=&type=show_document&highlight_docid=aza%3A%2F%2F';
+		$this->urlArret         = 'http://relevancy.bger.ch/php/aza/http/index.php?lang=fr&zoom=&type=show_document&highlight_docid=aza%3A%2F%2F';
 	}
 	 	 	
 	/* ===============================================
@@ -27,7 +27,9 @@ class Dates {
 		// Get last date
 		$lastDate = $wpdb->get_row('SELECT datep_nouveaute FROM '.$this->nouveautes_table.' ORDER BY datep_nouveaute DESC LIMIT 0,1 ');	
 		
-		return $lastDate->datep_nouveaute;
+		$date = ( !empty($lastDate) ? $lastDate->datep_nouveaute : '');
+		
+		return $date;
 	}
 	
 	// 
@@ -50,20 +52,24 @@ class Dates {
 		$toUpdate = array();
 		
 		$last = $this->lastDayInDb();
-		$last = strtotime($last);
-		$last = date("ymd", $last);	
 		
-		if(!empty($dates))
+		if(!empty($last))
 		{
-			foreach($dates as $date)
-			{			
-				if( $this->isToday($date) && ($date > $last) )
-				{
-					$toUpdate[] = $date;
-				}				
+			$last = strtotime($last);
+			$last = date("ymd", $last);	
+			
+			if(!empty($dates))
+			{
+				foreach($dates as $date)
+				{			
+					if( $this->isToday($date) && ($date > $last) )
+					{
+						$toUpdate[] = $date;
+					}				
+				}
 			}
 		}
-		
+
 		return $toUpdate;		
 	}
 				

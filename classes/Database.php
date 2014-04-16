@@ -1,5 +1,6 @@
 <?php 
 
+require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Utils.php');
 require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Grab.php');
 
 class Database{
@@ -14,6 +15,8 @@ class Database{
 	// Include classes
 	protected $grab;
 	
+	protected $utils;
+	
 	// urls	
 	protected $urlRoot;
 	
@@ -21,33 +24,21 @@ class Database{
 
 	function __construct( $test = null ) {
 				
-		/*
-			0 date publication
-			1 date decision
-			2 lien
-			3 numero
-			4 categorie
-			5 subcategorie
-			6 is publication
-			7 categorie id
-			8 language
-
-		*/
+		/* 0 date publication , 1 date decision, 2 lien, 3 numero, 4 categorie, 5 subcategorie, 6 is publication, 7 categorie id, 8 language */
 		
-		// Set tables
-		
+		// Set tables		
 		$this->nouveautes_table    = ( $test ? 'wp_nouveautes_test' : 'wp_nouveautes' );
 
 		$this->categories_table    = ( $test ? 'wp_custom_categories_test' : 'wp_custom_categories' );
 
 		$this->subcategories_table = ( $test ? 'wp_subcategories_test' : 'wp_subcategories' );
 		
-		// Set classes
+		// Set classes		
+		$this->utils = new Utils;
 		
-		$this->grab = new Grab;
+		$this->grab  = new Grab;
 		
-		// urls
-		
+		// urls		
 		$this->urlRoot  = 'http://relevancy.bger.ch';
 	
 		$this->urlArret = 'http://relevancy.bger.ch/php/aza/http/index.php?lang=fr&zoom=&type=show_document&highlight_docid=aza%3A%2F%2F';
@@ -62,11 +53,15 @@ class Database{
 	 
 		global $wpdb;
 
-		$wpdb->query('TRUNCATE TABLE '.$this->nouveautes_table.'');
+		$wpdb->query('TRUNCATE TABLE wp_nouveautes_test');
 
-		$wpdb->query('DELETE FROM '.$this->categories_table.' WHERE term_id > 247');
+		$wpdb->query('DELETE FROM wp_custom_categories_test WHERE term_id > 247');
 				 
-		$wpdb->query('TRUNCATE TABLE '.$this->subcategories_table.'');
+		$wpdb->query('TRUNCATE TABLE wp_subcategories_test');
+		
+		$wpdb->query('TRUNCATE TABLE wp_extracategories_test');
+		
+		$wpdb->query('TRUNCATE TABLE wp_updated');
 		 		 
 	}		
 
@@ -75,8 +70,8 @@ class Database{
 	 =============================================== */
 	
 	// Main insert function
-	// Lopp over arrets , arrange them and insert
-	// insert arret and subcategory
+	// Lopp over arrets, arrange them and insert
+	// Insert subcategory
 	public function insertNewArrets($arrets){
 		 
 		 global $wpdb;
@@ -193,7 +188,7 @@ class Database{
 		{
 			foreach($categories as $cat)
 			{ 
-				$category = $this->cleanString($cat);
+				$category = $this->utils->cleanString($cat);
 				
 				$result   = $this->findCategory($category);
 				
@@ -259,7 +254,7 @@ class Database{
 			$category = $category[0]; 
 			
 			// clean the category string
-			$category = $this->cleanString($category,true);
+			$category = $this->utils->cleanString($category,true);
 			
 			// slice subcategory out
 			$subcategory = array_slice($temp, -2, 1);
@@ -280,7 +275,7 @@ class Database{
 					// put id of category in the array
 					$langueNumber[] = $number;
 					
-					if( $this->percent($category,$titleCat) )
+					if( $this->utils->percent($category,$titleCat) )
 					{
 						$preparedArret[] = array_merge($original, $id , $langueNumber); 
 					}				
@@ -308,51 +303,6 @@ class Database{
 		$subcategorie = array( 'name' => $arret[5] , 'refCategorie' => $arret[7] ); 
 		
 		return array( 'arret' => $data , 'subcategorie' => $subcategorie) ;
-	}
-		
-	/* ===============================================
-		Utils function, clean and test
-	 =============================================== */
-
-	public function flattenArray(array $array){
-	
-		$ret_array = array();
-		  
-		foreach(new RecursiveIteratorIterator(new RecursiveArrayIterator($array)) as $value)
-		{
-		   $ret_array[] = $value;
-		}
-		  
-	    return $ret_array;
-	}
-	
-	// Test if the string is the same
-	public function percent($category,$string){
-	
-		similar_text($category, $string , $percent);
-				
-		if( $percent >= 90)
-		{	
-			return true;
-		}		
-		
-		return false;
-	}
-	
-	// clean almost identical category string 
-	public function cleanString($string ,$db = NULL){
-		
-		// remove *
-		$string = str_replace('*', '', $string);
-		
-		if($db)
-		{
-			$string = str_replace('(en ', '(', $string);
-		}
-		// trim string	
-		$string = trim($string);
-
-		return $string;
 	}
 			
 }
