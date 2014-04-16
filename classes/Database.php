@@ -11,10 +11,6 @@ class Database{
 	
 	protected $subcategories_table;
 	
-	protected $keywords_table;
-	
-	protected $extracategory_table;
-	
 	// Include classes
 	protected $grab;
 	
@@ -23,7 +19,7 @@ class Database{
 	
 	protected $urlArret;
 
-	function __construct( $test = null) {
+	function __construct( $test = null ) {
 				
 		/*
 			0 date publication
@@ -110,7 +106,10 @@ class Database{
 			 }
 		 }
 		 
-		 return $inserted;
+		 // if we have inserted all arrets we are ok
+		 $result = ( count($arrets) == count($inserted) ? true : false );
+		 
+		 return $result;
 	}	
 		 
 	public function insertArret($arret){

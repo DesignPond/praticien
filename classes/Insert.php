@@ -14,16 +14,11 @@ class Insert{
 	protected $arrange;
 	
 	protected $database;
-
-	// Tables
-	protected $keywords_table;
-	
-	protected $extracategory_table;
 		
 	// Urls	
 	protected $urlList;
 	
-	function __construct() {
+	function __construct( $test = NULL ) {
 
 		// Get classes		
 		$this->grab     = new Grab;
@@ -32,12 +27,7 @@ class Insert{
 				
 		$this->arrange  = new Arrange;
 		
-		$this->database = new Database(true);
-
-		// Tables		
-		$this->keywords_table      = 'wp_keyword_extra';
-		
-		$this->extracategory_table = 'extracategories';
+		$this->database = new Database($test);
 				
 		// Urls		
 		$this->urlList = 'http://relevancy.bger.ch/AZA/liste/fr/';
@@ -57,11 +47,11 @@ class Insert{
 
 		// Test if there's today's date in the list and if not in the database already
 				
-		$toUpdate = $this->dates->datesToUpdate($dates);
+		$toInsert = $this->dates->datesToUpdate($dates);
 		
-		if(!empty($toUpdate))
+		if(!empty($toInsert))
 		{
-			foreach($toUpdate as $list)
+			foreach($toInsert as $list)
 			{	
 				// Grab list of arrets for the date in list	
 														
@@ -90,12 +80,17 @@ class Insert{
 					echo '<pre>';
 					print_r($arranged);
 					echo '</pre>';	
-					// arrange arret eand subcategorie
-					// $this->database->insertNewArrets($arranged);						
-				}
-		
+					
+					// Insert new arrets
+					if( $this->database->insertNewArrets($arranged) === false)
+					{
+						return false;
+					}						
+				}		
 			}
-		}	
+		}
+		
+		return true;
 			
 	}
 		

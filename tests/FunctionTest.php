@@ -8,7 +8,11 @@ class FunctionTest extends PHPUnit_Framework_TestCase
 	
 	protected $arrange;
 	
+	protected $dates;
+	
 	protected $database;
+	
+	protected $update;
 	
 	// urls	
 	protected $urlRoot;
@@ -20,8 +24,12 @@ class FunctionTest extends PHPUnit_Framework_TestCase
 		$this->grab     = new Grab;
 		
 		$this->arrange  = new Arrange;
+
+		$this->dates    = new Dates;
 		
-		$this->database = new Database(true);	
+		$this->database = new Database(true);
+		
+		$this->update   = new Update(true);	
 		
 		// urls
 		
@@ -333,7 +341,7 @@ class FunctionTest extends PHPUnit_Framework_TestCase
 		
 		$expect = $this->urlArret.'24-03-2014-2C_692-2013'; 
 		
-		$actual = $this->database->formatArretUrl($links);
+		$actual = $this->update->formatArretUrl($links);
 		
 		$this->assertEquals($expect,$actual);	
 		
@@ -345,7 +353,7 @@ class FunctionTest extends PHPUnit_Framework_TestCase
 		
 		$expect = array('sicherheit','autre mot ici','tribunal');
 
-	  	$actual = $this->database->prepareSearch($search);
+	  	$actual = $this->update->prepareSearch($search);
 	  	
 		$this->assertEquals($expect,$actual);		
 	
@@ -353,7 +361,7 @@ class FunctionTest extends PHPUnit_Framework_TestCase
 	
 	public function testLastDayInDbIsToday(){
 	
-		$result = $this->database->isToday(date('Y-m-d'));
+		$result = $this->dates->isToday(date('Y-m-d'));
 		
 		$this->assertTrue($result);
 		
