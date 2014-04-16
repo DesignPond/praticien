@@ -2,7 +2,7 @@
 
 require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Grab.php');
 
-class Database {
+class Database{
 	
 	// DB tables
 	protected $nouveautes_table;
@@ -46,10 +46,6 @@ class Database {
 
 		$this->subcategories_table = ( $test ? 'wp_subcategories_test' : 'wp_subcategories' );
 		
-		$this->keywords_table      = 'wp_keyword_extra';
-		
-		$this->extracategory_table = 'extracategories';
-		
 		// Set classes
 		
 		$this->grab = new Grab;
@@ -81,7 +77,10 @@ class Database {
 	/* ===============================================
 		Insert data into database
 	 =============================================== */
-	 
+	
+	// Main insert function
+	// Lopp over arrets , arrange them and insert
+	// insert arret and subcategory
 	public function insertNewArrets($arrets){
 		 
 		 global $wpdb;
@@ -126,6 +125,20 @@ class Database {
 		
 		return false;		
 	}
+	 
+	public function insertSubcategory($subcategory , $idNewArret){
+	 	
+	 	global $wpdb;
+	 	
+	 	$subcategory['refNouveaute'] = $idNewArret;
+	 	
+		if( $wpdb->insert( $this->subcategories_table , $subcategory , array( '%s')) !== FALSE )
+		{
+			return true;
+		}
+		
+		return false;	 			
+	}
 
 	public function insertCategory($category){
 	
@@ -144,147 +157,10 @@ class Database {
 				
 		return true;  
 	}
-	 
-	public function insertSubcategory($subcategory , $idNewArret){
-	 	
-	 	global $wpdb;
-	 	
-	 	$subcategory['refNouveaute'] = $idNewArret;
-	 	
-		if( $wpdb->insert( $this->subcategories_table , $subcategory , array( '%s')) !== FALSE )
-		{
-			return true;
-		}
-		
-		return false;	 			
-	}
-	 
-	public function updateTextArret($listLinks){
-
-	 	global $wpdb;
-		
-		if(!empty($listLinks))
-		{	 	
-			foreach($listLinks as $id => $link)
-			{								 	
-	 			$urlArret = '';
-				
-				$urlArret = $this->formatArretUrl($link);				
-
-				$text     = $this->grab->getArticle($urlArret , $this->urlRoot);
-				
-				if( !empty($text) )
-				{		
-					$data = array( 'texte_nouveaute' => $text , 'updated' => 1 ); 
-						
-					$wpdb->update( $this->nouveautes_table , $data , array( 'id_nouveaute' => $id), array( '%s' , '%d' ), array( '%d' ));
-					
-					$this->addExtraKeywords($id);
-				}				
-			}
-		}	
-		
-		return 'ok';	
-	}
-	
-	public function addExtraKeywords($id){
-
-	 	global $wpdb;
-		
-		$needles = $this->getExtraKeywords();
-			
-		if( $needles )
-		{				
-			foreach($needles as $needle_id => $needle)
-			{
-				foreach($needle as $word)
-				{
-					if( $this->searchDatabaseKeywords($word , $id) !== 0 )
-					{
-						$data = array( 
-							'parent_extra'    => $needle_id,  
-							'nouveaute_extra' => $id
-						); 
-								
-						$wpdb->insert( $this->extracategory_table , $data , array( '%d' , '%d'));
-						
-						// break the foreaches 
-						return true;							
-					} 
-				}
-			} 			
-		} 
-		
-		return true;
-				
-	}
-	 
-	public function formatArretUrl($arret){
-		
-		$urlArret = '';
-		
-		$date   = new DateTime($arret['dated_nouveaute']);
-		$dated  = $date->format('d-m-Y');
-		$numero = str_replace("/","-",$arret['numero_nouveaute']);
-		
-		$urlArret  = $this->urlArret;				
-		$urlArret .= $dated.'-'.$numero;
-		
-		return $urlArret;
-		
-	}
 	 	 	
 	/* ===============================================
-		Get data from database
+		Get data from database Categories
 	 =============================================== */
-	 
-	
-	public function lastDayInDb(){
-	
-		global $wpdb;
-				
-		// Get last date
-		$lastDate = $wpdb->get_row('SELECT datep_nouveaute FROM wp_nouveautes ORDER BY datep_nouveaute DESC LIMIT 0,1 ');	
-		
-		return $lastDate->datep_nouveaute;
-		
-	}
-	
-	public function isToday($date){
-		
-	    $yesterday = date("Y-m-d", strtotime("-1 day"));
-		$yesterday = strtotime($yesterday);
-		$yesterday = date("ymd", $yesterday);
-		
-		$date      = strtotime($date);
-		$date      = date("ymd", $date);	
-		
-		$isToday = ( $date > $yesterday ? true : false);
-		
-		return $isToday;
-	}
-	
-	public function datesToUpdate($dates){
-	
-		$toUpdate = array();
-		
-		$last = $this->lastDayInDb();
-		$last = strtotime($last);
-		$last = date("ymd", $last);	
-		
-		if(!empty($dates))
-		{
-			foreach($dates as $date)
-			{			
-				if( $this->isToday($date) && ($date > $last) )
-				{
-					$toUpdate[] = $date;
-				}				
-			}
-		}
-		
-		return $toUpdate;		
-	}
 	
 	// Get all categories and arrange them by language
 	public function getCategories(){
@@ -304,27 +180,6 @@ class Database {
 		}
 		
 		return $allcategories;
-			
-	}
-	
-	// Get all subcategories 
-	public function getExtraKeywords(){
-	
-		global $wpdb;
-		
-		$needles = array();
-		
-		$extraKeywords = $wpdb->get_results('SELECT * FROM '.$this->keywords_table.'');
-		
-		if($extraKeywords)
-		{
-			foreach($extraKeywords as $extra)
-			{
-				$needles[$extra->parent_keywords][] = $extra->extra_keywords ;
-			}
-		}
-		
-		return $needles;
 			
 	}
 		
@@ -383,9 +238,10 @@ class Database {
 	}
 	
 	/* ===============================================
-		Arrange or search data
+		Arrange and organise for insert
 	 =============================================== */
-	  	
+	
+	// Arrange arret with infos, detect language   	
 	public function arrangeArret($arrets){
 
 		$preparedArret = array();
@@ -436,6 +292,7 @@ class Database {
 		  return $preparedArret;
 	}
 	
+	// Organise array for insert in db
 	public function organiserArret($arret){
 			
 		$data = array( 
@@ -453,6 +310,10 @@ class Database {
 		
 		return array( 'arret' => $data , 'subcategorie' => $subcategorie) ;
 	}
+		
+	/* ===============================================
+		Utils function, clean and test
+	 =============================================== */
 
 	public function flattenArray(array $array){
 	
@@ -465,82 +326,6 @@ class Database {
 		  
 	    return $ret_array;
 	}
-	
-	// search in databse
-	public function searchDatabaseKeywords($search , $id) {
-						
-		global $wpdb;
-	
-		$terms = $this->prepareSearch($search);
-						
-		// contruction de la requete
-		$query = 'SELECT * FROM wp_nouveautes WHERE id_nouveaute = "'.$id.'" AND ';			
-
-		$i = 1;
-		
-		$nbr = count($terms);
-		
-		if(!empty($terms))
-		{
-			foreach($terms as $term)
-			{			
-				$query .= 'wp_nouveautes.texte_nouveaute REGEXP   "[[:<:]]'.$term.'[[:>:]]"  ';
-
-				$query .= ( $i < $nbr ? ' AND ' : '');
-				
-				$i++;
-			}
-		}
-
-		$wpdb->get_results( $query );
-		
-		$rows = $wpdb->num_rows;
-		
-		return $rows;  
-	}
-
-		
-	/* ===============================================
-		Utils function, clean and test
-	 =============================================== */
-	 
-	 public function prepareSearch($search){
-	
-		$search =  htmlspecialchars_decode($search);
-		
-	    preg_match_all('/"(?:\\\\.|[^\\\\"])*"|\S+/', $search, $matches);
-		
-		$recherche = $matches[0];
-		
-		$find  = array();
-		
-		foreach($recherche as $rech)
-		{
-			// there is quotes "
-			if (preg_match('/\"([^\"]*?)\"/', $rech, $m)) 
-			{
-			   $string = $m[1];
-			   $string = str_replace('"', '', $string);
-			   $item   = str_replace('"', '', $string);
-			   $string = trim($string);
-			   
-		 	   $find[] = $item;   
-			}
-			else // no quotes
-			{
-			   $string = str_replace(',', '', $rech);
-			   $string = trim($string); 
-			   
-			   if( $string != '')
-			   {
-				   $find[] = $string;   
-			   }			   
-			}			
-		}
-
-		return $find;
-		
-	 }
 	
 	// Test if the string is the same
 	public function percent($category,$string){
