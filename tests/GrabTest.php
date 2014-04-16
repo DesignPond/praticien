@@ -12,7 +12,7 @@ class GrabTest extends PHPUnit_Framework_TestCase
 			
 	public function __construct()
 	{
-		$this->grab     = new Grab;
+		$this->grab = new Grab;
 		
 		// urls
 	
@@ -26,7 +26,7 @@ class GrabTest extends PHPUnit_Framework_TestCase
     public function testGetTitleOFPage()
     {
     	
-    	$url    = $this->urlArret.'12-02-2014-5A_816-2013';
+    	$url    = 'http://relevancy.bger.ch/php/aza/http/index.php?lang=fr&zoom=&type=show_document&highlight_docid=aza%3A%2F%2F12-02-2014-5A_816-2013';
     	
     	$html   = $this->grab->getPage($url);
     	$actual = $this->grab->getTitle($html);

@@ -20,15 +20,3 @@ Date
  [x] Last day in db is today
 
 Grab
- [x] Get title o f page
-
-Update
- [x] Update text arret
- [x] Prepare search for query
-
-Utils
- [x] Clean string simple
- [x] Clean string database
- [x] Percentage similar string
- [x] Flatten array
-

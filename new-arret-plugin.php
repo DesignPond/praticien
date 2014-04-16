@@ -40,10 +40,11 @@
 	
 	add_action( 'send_task_hook', 'task_send_email' ); 
 	
-	require_once( plugin_dir_path( __FILE__ ). '/data_functions.php');
-	
+/*
+	require_once( plugin_dir_path( __FILE__ ). '/data_functions.php');	
 	require_once( plugin_dir_path( __FILE__ ). '/classes/arret.php');
 	require_once( plugin_dir_path( __FILE__ ). '/classes/user.php');
+*/
 	
 	function task_send_email() {
 	
@@ -55,7 +56,8 @@
 		/*===============================================
 				Mise à jour
 		=================================================*/
-	
+	/*
+
 			// Get last date
 			$dernier_date_arret = $wpdb->get_results('SELECT * FROM wp_nouveautes ORDER BY datep_nouveaute DESC LIMIT 0,1 ');	
 		  	$dateArret          = $dernier_date_arret[0]->datep_nouveaute; 
@@ -125,7 +127,8 @@
 		 				-  dataArray (array) with infos rearranded
 		 				-  catArray (array) with categories to insert if new
 	 		    	============================================================*/
-				
+	 				
+	 			/*
 					$dataCleaned = cleanFormat2($theData, $dates);
 					
 					// Get rearranded arrays				
@@ -161,11 +164,14 @@
 			{
 				wp_mail('cindy.leschaud@gmail.com', 'Résultat de la mise à jour', 'Hello, il n\'y a pas eu de mise à jour :( ');
 			}
+			
+			*/
 
 			/*=========================================	
 				 new envois
 			==========================================*/
 	
+/*
 			$arretClass = new Arret();
 			$userClass  = new User();
 		
@@ -243,6 +249,7 @@
 				}
 				
 			} // end if date && maj ok
+*/
 			
 	
 			/*=========================================	
