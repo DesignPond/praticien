@@ -53,27 +53,42 @@ class Grab {
 	public function getPage($url){
 		
 		// Curl the url and retrive html
-		$conten = $this->curl_grab_page($url);
+		$content = $this->curl_grab_page($url);
 		
 		// Parse html 
-		return str_get_html($conten);
+		return str_get_html($content);
 		
 	}
 
 	public function getTitle($html)
-	{   
-		// Get the title of page
-		$title  = $html->find('title',0)->innertext; 
+	{   		
+		$title = '';
 		
-		return  strip_tags($title); 
+		// test if it's an object | because if it's not an object we have nothing from the url :(
+		if(is_object($html))
+		{
+			// Get the title of page
+			$title = $html->find('title',0)->innertext; 
+		
+			$title = strip_tags($title); 
+		}
+		
+		return $title;
 	}
 	
 	public function getContent($html)
 	{   
-		// Get the content of page		
-		$content = $html->find('div[class=content]',0)->innertext; 
+		$content = '';
+				
+		// test if it's an object | because if it's not an object we have nothing from the url :(
+		if(is_object($html))
+		{
+			// Get the content of page		
+			$content = $html->find('div[class=content]',0)->innertext; 
+			$content = utf8_encode($content);
+		}
 		
-		return utf8_encode($content);
+		return $content;
 	}
 
 	public function getArticle($url , $host){

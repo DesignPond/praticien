@@ -2,6 +2,7 @@
 
 require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Utils.php');
 require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Search.php');
+require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Log.php');
 
 class Nouveautes {
 
@@ -17,7 +18,9 @@ class Nouveautes {
 	protected $utils;
 	
 	protected $search;
-	
+		
+	protected $log;
+		
 	// propreties		
 	protected $special;
 
@@ -26,16 +29,18 @@ class Nouveautes {
 		/* 0 date publication , 1 date decision, 2 lien, 3 numero, 4 categorie, 5 subcategorie, 6 is publication, 7 categorie id, 8 language */
 		
 		// Set tables		
-		$this->nouveautes_table    = ( $test ? 'wp_nouveautes' : 'wp_nouveautes' );
+		$this->nouveautes_table    = ( $test ? 'wp_nouveautes_test' : 'wp_nouveautes' );
 
-		$this->categories_table    = ( $test ? 'wp_custom_categories' : 'wp_custom_categories' );
+		$this->categories_table    = ( $test ? 'wp_custom_categories_test' : 'wp_custom_categories' );
 
-		$this->subcategories_table = ( $test ? 'wp_subcategories' : 'wp_subcategories' );
+		$this->subcategories_table = ( $test ? 'wp_subcategories_test' : 'wp_subcategories' );
 		
 		// Set classes		
 		$this->utils   = new Utils;
 
 		$this->search  = new Search();
+		
+		$this->log     = new Log;
 		
 		// special categories
 		$this->special = array('LLCA','BGFA');
@@ -54,7 +59,7 @@ class Nouveautes {
 		$arrets = array();
 		
 		// Find if we passed a single date or a range	
-		$when = ( is_array($date) ? ' BETWEEN "'.$date[1].'" AND "'.$date[0].'"' : ' = "'.$date.'"' );
+		$when = ( is_array($date) ? ' BETWEEN "'.$date[0].'" AND "'.$date[1].'"' : ' = "'.$date.'"' );
 		
 		$listArrets = $wpdb->get_results('SELECT '.$this->nouveautes_table.'.* , 
 												 '.$this->categories_table.'.name as nameCat , 
@@ -65,7 +70,7 @@ class Nouveautes {
 										  JOIN '.$this->categories_table.'  on '.$this->categories_table.'.term_id  = '.$this->nouveautes_table.'.categorie_nouveaute 
 										  LEFT JOIN '.$this->subcategories_table.' on '.$this->subcategories_table.'.refNouveaute = '.$this->nouveautes_table.'.id_nouveaute 
 										  WHERE '.$this->nouveautes_table.'.datep_nouveaute '.$when.'');	
-										  
+
 		if(!empty($listArrets))
 		{
 			foreach ($listArrets as $arret) 
@@ -119,17 +124,16 @@ class Nouveautes {
 		if(!empty($arrets))
 		{		
 			foreach($arrets as $id => $arret)
-			{
-				$resultat = array();
-				
-				$resultat = $this->arretsInSearch($keywords,$id);
-				
+			{				
 				// Test if is pub
 				if( ($isPub && $this->isPub($arret)) || !$isPub )
-				{																
-					$listIds[$id] = $resultat['keywords'];											
+				{		
+					$listIds[$id] = $this->arretsInSearch($keywords,$id);																														
 				}
-
+				else
+				{
+					$listIds[$id] = '';
+				}
 			}
 		}
 		
@@ -158,9 +162,10 @@ class Nouveautes {
 		return $ids;
 	}
 	
+	// keywords is array of strings 
 	public function arretsInSearch($keywords ,$arret){
 		
-		$result = array();
+		$result = '';
 		$found  = array();
 		
 		if( !empty($keywords) )
@@ -169,26 +174,19 @@ class Nouveautes {
 		    {
 		  	    $words = $this->formatKeywords($keyword);
 			    
-			    $keyExist = $this->search->searchDatabaseKeywords($word , $arret);
+			    $keyExist = $this->search->searchDatabaseKeywords($words , $arret);
 				
 			    if( $keyExist == 1 )
 			    {	
-				   $found[] = $words ;
+				   $found[] = $words;
 			    }
 		    }
 		    
 		    if(!empty($found))
 		    {
-			    $allwords           = implode(',', $found);
-			    $result['id']       = $arret;
-			    $result['keywords'] = $allwords;
+			    $result = implode(',', $found);
 		    }
-		    // No else because if we want keaywords we dont want arrets without them
-		}
-		else
-		{
-			$result['id']       = $arret;
-			$result['keywords'] = '';
+		    // No else because if we want keywords we dont want arrets without them
 		}
 
 		return $result;
@@ -198,7 +196,7 @@ class Nouveautes {
 		
 		$words = explode(',' , $keywords );
 		$words = array_filter(array_map('trim', $words));
-		$words = implode(" ", $words);
+		$words = implode(' ', $words);
 		
 		return $words;									    
 	}

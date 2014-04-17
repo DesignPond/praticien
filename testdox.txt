@@ -20,3 +20,25 @@ Date
  [x] Last day in db is today
 
 Grab
+ [x] Get title o f page
+
+Nouveautes
+ [x] Is publication
+ [x] Is not publication
+ [x] Format keywords for search in arret
+ [x] Arrets in search
+ [ ] Dispatch arret by keyword found
+ [x] Dispatch arret by keyword not found
+
+Search
+ [x] Prepare search for query
+
+Update
+ [x] Update text arret
+
+Utils
+ [x] Clean string simple
+ [x] Clean string database
+ [x] Percentage similar string
+ [x] Flatten array
+

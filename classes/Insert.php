@@ -4,6 +4,7 @@ require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Grab.php');
 require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Dates.php');
 require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Arrange.php');
 require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Database.php');
+require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Log.php');
 
 class Insert{
 
@@ -14,6 +15,8 @@ class Insert{
 	protected $arrange;
 	
 	protected $database;
+	
+	protected $log;
 		
 	// Urls	
 	protected $urlList;
@@ -26,6 +29,8 @@ class Insert{
 		$this->dates    = new Dates;
 				
 		$this->arrange  = new Arrange;
+		
+		$this->log      = new Log;
 		
 		$this->database = new Database($test);
 				
@@ -73,12 +78,20 @@ class Insert{
 					if( $this->database->insertNewArrets($arranged) === false)
 					{
 						return false;
-					}						
+					}	
+					
+					// LOGGING
+					$this->log->write('All arret inserted for date '.$list.'');
+				 	// END LOGGIN					
 				}		
 			}
 			
 			return true;
 		}
+		
+		// LOGGING
+		$this->log->write('Nothing to insert');
+		// END LOGGIN	
 
 		return false;	
 	}	

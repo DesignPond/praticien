@@ -3,6 +3,7 @@
 require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Grab.php');
 require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Database.php');
 require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Search.php');
+require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Log.php');
 
 class Update{
 
@@ -12,7 +13,9 @@ class Update{
 	protected $database;
 	
 	protected $search;
-
+		
+	protected $log;
+	
 	// Set tables
 	protected $nouveautes_table;
 
@@ -34,7 +37,9 @@ class Update{
 		
 		$this->database = new Database(true);
 		
-		$this->search   = new Search();
+		$this->search   = new Search;
+		
+		$this->log      = new Log;
 		
 		// Set tables
 		$this->nouveautes_table    = ( $test ? 'wp_nouveautes_test' : 'wp_nouveautes' );
@@ -70,12 +75,19 @@ class Update{
 				else
 				{
 					echo 'Danger!! Danger!!';
+										
+					 // LOGGING
+					$this->log->write('Problème with update of arret for date : '.$date);
+				 	// END LOGGIN	
 				}
 			}
 		}
 		else
 		{
 			echo 'Nothing to update';
+			// LOGGING
+			$this->log->write('Nothing to update : '.$date);
+			// END LOGGIN	
 		}
 			
 	}

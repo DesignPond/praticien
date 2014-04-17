@@ -29,27 +29,52 @@ class NouveautesTest extends PHPUnit_Framework_TestCase
 		
 	}
 	
-	public function testsearchKeywordInArret(){
+	public function testFormatKeywordsForSearchInArret(){
+			
+		$keywords = '"quam volutpat molestie" , volutpat';	
+		
+		$expect   = '"quam volutpat molestie" volutpat' ;
+						
+		$actual   = $this->nouveaute->formatKeywords($keywords);
+		
+		$this->assertEquals($expect,$actual);	
+
+	}
 	
-		$arret = array(
-			array(
-				'id_nouveaute'          => '92',
-				'datep_nouveaute'       => '2014-04-07',
-	            'dated_nouveaute'       => '2014-04-02',
-	            'categorie_nouveaute'   => '208',
-	            'nameCat'               => 'Droit des poursuites et faillites',
-	            'nameSub'               => 'Prestazione complementare',
-	            'numero_nouveaute'      => '5A_676/2013',
-	            'publication_nouveaute' => 0 
-			)  
+	public function testArretsInSearch(){
+	
+		$keywords = array('"quam volutpat molestie"' , 'volutpat') ;	
+		
+		$expect   = '"quam volutpat molestie",volutpat';
+				
+		$actual   = $this->nouveaute->arretsInSearch($keywords , 1);
+		
+		$this->assertEquals($expect,$actual);	
+		
+	}
+	
+	public function testDispatchArretByKeywordFound(){
+			
+		$arrets = array(
+			1 => array('publication_nouveaute' => 1),
+			2 => array('publication_nouveaute' => 0)  
 		);
 		
-		$expect = array(
-	                
-		);
+		$keywords = array('"quam volutpat molestie"' , 'volutpat') ;
+		
+		$isPub    = 1;
+		
+		$expect   = array( 1 => '"quam volutpat molestie",volutpat');
 				
-		$actual = $this->database->arrangeArret($arret);
+		$actual   = $this->nouveaute->dispatchArretByKeyword($arrets , $keywords , $isPub);
 		
 		$this->assertEquals($expect,$actual);
-	}		
+		
+	}
+	
+	public function testDispatchArretByKeywordNotFound(){
+
+		
+	}
+			
 }

@@ -17,7 +17,7 @@ class DatabaseTest extends PHPUnit_Framework_TestCase
     {
     		
 		// delete test table before test
-		$this->database->deleteTable();
+		// $this->database->deleteTable();
 		
     }
     
@@ -127,8 +127,8 @@ class DatabaseTest extends PHPUnit_Framework_TestCase
 	public function testInsertNewArretInDatabase(){
 						
 		$arret = array( 
-			'datep_nouveaute'       => '2014-04-07',  
-			'dated_nouveaute'       => '2014-04-02', 
+			'datep_nouveaute'       => '2014-04-14',  
+			'dated_nouveaute'       => '2014-04-01', 
 			'categorie_nouveaute'   => '208', 
 			'link_nouveaute'        => '/cgi-bin/JumpCGI?id=02.04.2014_1B_88/2014&lang=fr',
 			'numero_nouveaute'      => '1B_88/2014',

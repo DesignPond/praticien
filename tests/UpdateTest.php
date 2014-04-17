@@ -30,17 +30,5 @@ class UpdateTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expect,$actual);	
 		
 	}
-	
-	public function testPrepareSearchForQuery(){
-		
-		$search = 'sicherheit, "autre mot ici", "tribunal"';
-		
-		$expect = array('sicherheit','autre mot ici','tribunal');
-
-	  	$actual = $this->update->prepareSearch($search);
-	  	
-		$this->assertEquals($expect,$actual);		
-	
-	}
 		
 }

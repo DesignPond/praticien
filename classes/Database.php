@@ -2,6 +2,7 @@
 
 require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Utils.php');
 require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Grab.php');
+require_once(plugin_dir_path(  dirname(__FILE__)  ) . 'classes/Log.php');
 
 class Database{
 	
@@ -16,6 +17,8 @@ class Database{
 	protected $grab;
 	
 	protected $utils;
+	
+	protected $log;
 	
 	// urls	
 	protected $urlRoot;
@@ -38,6 +41,8 @@ class Database{
 		
 		$this->grab  = new Grab;
 		
+		$this->log   = new Log;
+		
 		// urls		
 		$this->urlRoot  = 'http://relevancy.bger.ch';
 	
@@ -53,7 +58,7 @@ class Database{
 	 
 		global $wpdb;
 
-		$wpdb->query('TRUNCATE TABLE wp_nouveautes_test');
+		$wpdb->query('DELETE FROM wp_nouveautes_test WHERE datep_nouveaute > "2014-04-13"');
 
 		$wpdb->query('DELETE FROM wp_custom_categories_test WHERE term_id > 247');
 				 
@@ -92,6 +97,10 @@ class Database{
 				 $id = $this->insertArret($newarret);
 				 				 
 				 $inserted[$id] = $newarret;
+				 
+				 // LOGGING
+				 $this->log->write('New arret inserted : '.$id);
+				 // END LOGGIN
 				 
 				 // Insert DB subcategory
 				 if($id)
