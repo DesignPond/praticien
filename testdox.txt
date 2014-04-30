@@ -27,7 +27,7 @@ Nouveautes
  [x] Is not publication
  [x] Format keywords for search in arret
  [x] Arrets in search
- [ ] Dispatch arret by keyword found
+ [x] Dispatch arret by keyword found
  [x] Dispatch arret by keyword not found
 
 Search
