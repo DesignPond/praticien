@@ -74,7 +74,20 @@ class NouveautesTest extends PHPUnit_Framework_TestCase
 	
 	public function testDispatchArretByKeywordNotFound(){
 
+		$arrets = array(
+			1 => array('publication_nouveaute' => 0),
+			2 => array('publication_nouveaute' => 0)  
+		);
 		
+		$keywords = array('"quam volutpat molestie"' , 'volutpat') ;
+		
+		$isPub    = 0;
+		
+		$expect   = array( 1 => '"quam volutpat molestie",volutpat' , 2 => '');
+				
+		$actual   = $this->nouveaute->dispatchArretByKeyword($arrets , $keywords , $isPub);
+		
+		$this->assertEquals($expect,$actual);
 	}
 			
 }

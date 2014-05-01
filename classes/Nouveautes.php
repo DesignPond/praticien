@@ -126,14 +126,35 @@ class Nouveautes {
 			foreach($arrets as $id => $arret)
 			{				
 				// Test if is pub
-				
-				if( ($isPub && $this->isPub($arret)))
-				{		
-					$listIds[$id] = $this->arretsInSearch($keywords,$id);																														
-				}
-				else if( (!$isPub && !$this->isPub($arret)) || (!$isPub && $this->isPub($arret)) )
+				if( $isPub )
 				{
-					$listIds[$id] = '';
+					if( $this->isPub($arret) )
+					{		
+						$result = $this->arretsInSearch($keywords,$id);
+						
+						if(!empty($result) && $keywords)
+						{
+							$listIds[$id] = $result;
+						}
+						else
+						{
+							$listIds[$id] = '';
+						}
+																																				
+					}			
+				}
+				else
+				{		
+					$result = $this->arretsInSearch($keywords,$id);
+						
+					if(!empty($result) && $keywords)
+					{
+						$listIds[$id] = $result;
+					}
+					else
+					{
+						$listIds[$id] = '';
+					}																													
 				}
 
 			}
