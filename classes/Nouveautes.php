@@ -61,11 +61,15 @@ class Nouveautes {
 		// Find if we passed a single date or a range	
 		$when = ( is_array($date) ? ' BETWEEN "'.$date[0].'" AND "'.$date[1].'"' : ' = "'.$date.'"' );
 		
-		$listArrets = $wpdb->get_results('SELECT '.$this->nouveautes_table.'.* , 
+		$listArrets = $wpdb->get_results('SELECT '.$this->nouveautes_table.'.id_nouveaute , 
+												 '.$this->nouveautes_table.'.datep_nouveaute , 
+												 '.$this->nouveautes_table.'.dated_nouveaute , 
+												 '.$this->nouveautes_table.'.categorie_nouveaute , 
+												 '.$this->nouveautes_table.'.link_nouveaute , 
+												 '.$this->nouveautes_table.'.numero_nouveaute , 
+												 '.$this->nouveautes_table.'.publication_nouveaute , 
 												 '.$this->categories_table.'.name as nameCat , 
-												 '.$this->categories_table.'.*, 
-												 '.$this->subcategories_table.'.name as nameSub , 
-												 '.$this->subcategories_table.'.*
+												 '.$this->subcategories_table.'.name as nameSub 
 										  FROM '.$this->nouveautes_table.' 
 										  JOIN '.$this->categories_table.'  on '.$this->categories_table.'.term_id  = '.$this->nouveautes_table.'.categorie_nouveaute 
 										  LEFT JOIN '.$this->subcategories_table.' on '.$this->subcategories_table.'.refNouveaute = '.$this->nouveautes_table.'.id_nouveaute 
@@ -85,7 +89,7 @@ class Nouveautes {
 				$arrets['numero_nouveaute']      = $arret->numero_nouveaute;
 				$arrets['publication_nouveaute'] = $arret->publication_nouveaute;
 				
-				$list[$arret->id_nouveaute] = $arrets;	
+				$list[$arret->categorie_nouveaute][$arret->id_nouveaute] = $arrets;	
 			}
 		}
 		
@@ -115,9 +119,7 @@ class Nouveautes {
 		return $range;
 	}
 
-	// Categorie 247 (General) get array_keys($list)
-	// All others get list of id_nouveaute from categorie array
-	public function dispatchArretByKeyword($arrets , $keywords = NULL, $isPub = NULL){
+	public function dispatchArretWithKeyword($arrets , $keywords = NULL, $isPub = NULL){
 		
 		$listIds = array();
 		
@@ -125,36 +127,19 @@ class Nouveautes {
 		{		
 			foreach($arrets as $id => $arret)
 			{				
-				// Test if is pub
-				if( $isPub )
+				// Test if is pub or/and keywords found				
+				if( ($isPub && $this->isPub($arret)) || !$isPub )
 				{
-					if( $this->isPub($arret) )
-					{		
-						$result = $this->arretsInSearch($keywords,$id);
-						
-						if(!empty($result) && $keywords)
-						{
-							$listIds[$id] = $result;
-						}
-						else
-						{
-							$listIds[$id] = '';
-						}
-																																				
-					}			
-				}
-				else
-				{		
 					$result = $this->arretsInSearch($keywords,$id);
-						
+					
 					if(!empty($result) && $keywords)
 					{
 						$listIds[$id] = $result;
 					}
 					else
 					{
-						$listIds[$id] = '';
-					}																													
+						$listIds[$id] = NULL;
+					}		
 				}
 
 			}
