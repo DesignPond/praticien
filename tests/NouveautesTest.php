@@ -35,6 +35,56 @@ class NouveautesTest extends PHPUnit_Framework_TestCase
 		
 	}
 
+	public function testDispatchArretsForUser(){
+		
+		$arrets = array(
+			174 => array(
+				1 => array(
+					'id_nouveaute'          => '1',
+					'datep_nouveaute'       => '2014-04-13',
+					'dated_nouveaute'       => '2014-04-01',
+					'categorie_nouveaute'   => '174',
+					'nameCat'               => 'Droit fondamental',
+					'nameSub'               => 'test',
+					'link_nouveaute'        => 'http://www.google.ch',
+					'numero_nouveaute'      => '12_345/2014',
+					'publication_nouveaute' => '1'
+				)
+			)
+		);
+		
+		$users  = array( 
+			1 => array(
+				204 => array( 'keywords' => array('Tribunal Fédéral'),'ispub' => 1),
+				180 => array( 'keywords' => '', 'ispub' => 0),
+				192 => array( 'keywords' => '', 'ispub' => 0),
+				174 => array( 'keywords' => '', 'ispub' => 0),
+				247 => array( 'keywords' => array('Bohnet') , 'ispub' => 0)				
+			),
+			3 => array(
+				198 => array( 'keywords' => '', 'ispub' => 0),
+				199 => array( 'keywords' => '', 'ispub' => 1),
+				203 => array( 'keywords' => '', 'ispub' => 0),
+				195 => array( 'keywords' => '', 'ispub' => 0),
+				247 => array( 'keywords' => array('miete'),'ispub' => 0)
+			)			
+		);
+		
+		$expect = array( 1 => 
+					array( 174 => ''  ) 
+		);
+				
+		$actual = $this->nouveaute->assignArretsUsers($users, $arrets);		
+		
+		echo '<pre>';
+		print_r($actual);
+		echo '</pre>';
+		exit();
+		
+		$this->assertEquals($expect,$actual);	
+		
+	}
+
 	public function testGetCategoriesList(){
 
 		$date   = '2014-04-13';
@@ -106,7 +156,7 @@ class NouveautesTest extends PHPUnit_Framework_TestCase
 		
 		$isPub  = 1;
 		
-		$expect = array( 1 => '"quam volutpat molestie",volutpat');
+		$expect = array( 1 => '"quam volutpat molestie",volutpat' );
 				
 		$actual = $this->nouveaute->dispatchArretWithKeyword($arrets , $keywords , $isPub);
 		

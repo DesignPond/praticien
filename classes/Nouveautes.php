@@ -145,13 +145,68 @@ class Nouveautes {
 						$listIds[$id] = NULL;
 					}		
 				}
-
 			}
 		}
 		
 		return $listIds;
 	}
+
 	
+	public function assignArretsUsers($users, $arrets){
+		
+		$userArrets = array();
+				
+		foreach($users as $user => $cat)
+		{
+			foreach($cat as $idCat => $listes)
+			{
+							
+				$keywords = (!empty($listes['keywords']) ? $listes['keywords'] : NULL );
+				
+				$isPub    = (!empty($listes['ispub']) ? $listes['ispub'] : NULL );
+					
+				// Categorie general 		
+				if($idCat == 247)
+				{
+					// search in all arrets but only arrets and not the category key => flatten the array
+					$listArrets = $this->dispatchArretWithKeyword($arrets, $keywords , $isPub);
+						
+					if(!empty($listArrets))
+					{
+						$userArrets[$user] = $listArrets;
+					}
+					
+				}
+				else
+				{
+					// if it's the current categorie exist
+					if( isset($arrets[$idCat]) )
+					{
+						// Get list of arrets for current category
+						$list = $arrets[$idCat];
+						
+						$list = $this->utils->flattenArray($list);
+						
+						// search in arrets
+						$listArrets = $this->dispatchArretWithKeyword($list, $keywords , $isPub);
+							
+						if(!empty($listArrets))
+						{
+							$userArrets[$user] = $listArrets;
+						}		
+					}
+				}
+				
+			}			
+		}
+		
+		return $userArrets;
+	}	
+	
+	/*
+	* Utils
+	*
+	*/
 	public function isPub($arret){
 	
 		$isPub = ( $arret['publication_nouveaute'] ? true : false );

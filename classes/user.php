@@ -116,77 +116,7 @@ class User {
 		
 		return $listUserAbos;		
 	}
-	
-	public function assignArretsUsers($users, $list , $categories){
-		
-		$userArrets = array();
-				
-		foreach($users as $user => $cat)
-		{
-			foreach($cat as $key => $listes )
-			{
-				$words = NULL;
-				$isPub = NULL;
-				
-				if( !empty($listes['keywords']) )
-				{
-					$words = $listes['keywords'];
-				}
 
-				if( isset($listes['ispub']))
-				{
-					$isPub = $listes['ispub'];
-				}
-				
-				if($key == 247)
-				{
-					$allArrets  = array_keys($list);
-					$dispArrets = $this->arret->dispatch_arret_keyword($allArrets, $list, $words , $isPub);
-						
-					if(!empty($dispArrets))
-					{
-						foreach($dispArrets as $id => $dispa)
-						{
-							if( isset($userArrets[$user][$id]) )
-							{
-								$dispa .= ' '.$userArrets[$user][$id];
-							}
-							
-							$dispa = trim($dispa);
-							
-							$userArrets[$user][$id] = $dispa;
-						}
-					}
-				}
-				else
-				{
-					if( isset($categories[$key]) )
-					{
-						$listArrets = $categories[$key];
-						$allArrets  = $this->arret->listIdArretsCategorie($listArrets);	
-						$dispArrets = $this->arret->dispatch_arret_keyword($allArrets, $list, $words , $isPub);
-						
-						if(!empty($dispArrets))
-						{
-							foreach($dispArrets as $id => $dispa)
-							{
-								if( isset($userArrets[$user][$id]) )
-								{	
-									$dispa .= ' '.$userArrets[$user][$id];
-								}
-								
-								$dispa = trim($dispa);
-								
-								$userArrets[$user][$id] = $dispa;
-							}
-						}		
-					}
-				}
-			}			
-		}
-		
-		return $userArrets;
-	}
 
 		
 }

@@ -28,7 +28,7 @@ class UserTest extends PHPUnit_Framework_TestCase
 				204 => array( 'keywords' => array('Tribunal Fédéral'),'ispub' => 1),
 				180 => array( 'keywords' => '', 'ispub' => 0),
 				192 => array( 'keywords' => '', 'ispub' => 0),
-				222 => array( 'keywords' => '', 'ispub' => 0),
+				174 => array( 'keywords' => '', 'ispub' => 0),
 				247 => array( 'keywords' => array('Bohnet') , 'ispub' => 0)				
 			),
 			3 => array(
