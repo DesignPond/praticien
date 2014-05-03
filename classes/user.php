@@ -49,7 +49,9 @@ class User {
 					
 		global $wpdb;
 		
-		$userAbos    = array();
+		$userAbos = array();
+		
+		$currentdate  = date('Y-m-d');
 
 		$userAbosWithPub  = $this->getAllUserAbosPublicationCategory();
 	
@@ -59,18 +61,23 @@ class User {
 		{	
 			foreach($userKeywordsAbos as $user)
 			{		
-			
-				if(!empty($user->keywords))
-				{
-					$userAbos[$user->refUser][$user->refCategorie]['keywords'][] = $user->keywords;
-				}
-				else
-				{
-					$userAbos[$user->refUser][$user->refCategorie]['keywords'] = '';
-				}
+				// Test if user is valid
+				$valid = get_user_meta($user->refUser, 'date_abo_active', true);
 				
-				$userAbos[$user->refUser][$user->refCategorie]['ispub'] = (isset($userAbosWithPub[$user->refUser][$user->refCategorie]) ? $userAbosWithPub[$user->refUser][$user->refCategorie] : 0 );
+				if($valid > $currentdate)
+				{	
 				
+					if(!empty($user->keywords))
+					{
+						$userAbos[$user->refUser][$user->refCategorie]['keywords'][] = $user->keywords;
+					}
+					else
+					{
+						$userAbos[$user->refUser][$user->refCategorie]['keywords'] = '';
+					}
+					
+					$userAbos[$user->refUser][$user->refCategorie]['ispub'] = (isset($userAbosWithPub[$user->refUser][$user->refCategorie]) ? $userAbosWithPub[$user->refUser][$user->refCategorie] : 0 );
+				}
 			}
 		}
 		
@@ -109,6 +116,78 @@ class User {
 		
 		return $listUserAbos;		
 	}
+	
+	public function assignArretsUsers($users, $list , $categories){
+		
+		$userArrets = array();
+				
+		foreach($users as $user => $cat)
+		{
+			foreach($cat as $key => $listes )
+			{
+				$words = NULL;
+				$isPub = NULL;
+				
+				if( !empty($listes['keywords']) )
+				{
+					$words = $listes['keywords'];
+				}
+
+				if( isset($listes['ispub']))
+				{
+					$isPub = $listes['ispub'];
+				}
+				
+				if($key == 247)
+				{
+					$allArrets  = array_keys($list);
+					$dispArrets = $this->arret->dispatch_arret_keyword($allArrets, $list, $words , $isPub);
+						
+					if(!empty($dispArrets))
+					{
+						foreach($dispArrets as $id => $dispa)
+						{
+							if( isset($userArrets[$user][$id]) )
+							{
+								$dispa .= ' '.$userArrets[$user][$id];
+							}
+							
+							$dispa = trim($dispa);
+							
+							$userArrets[$user][$id] = $dispa;
+						}
+					}
+				}
+				else
+				{
+					if( isset($categories[$key]) )
+					{
+						$listArrets = $categories[$key];
+						$allArrets  = $this->arret->listIdArretsCategorie($listArrets);	
+						$dispArrets = $this->arret->dispatch_arret_keyword($allArrets, $list, $words , $isPub);
+						
+						if(!empty($dispArrets))
+						{
+							foreach($dispArrets as $id => $dispa)
+							{
+								if( isset($userArrets[$user][$id]) )
+								{	
+									$dispa .= ' '.$userArrets[$user][$id];
+								}
+								
+								$dispa = trim($dispa);
+								
+								$userArrets[$user][$id] = $dispa;
+							}
+						}		
+					}
+				}
+			}			
+		}
+		
+		return $userArrets;
+	}
+
 		
 }
 	

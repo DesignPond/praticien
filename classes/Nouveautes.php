@@ -51,12 +51,13 @@ class Nouveautes {
 	 * Get all arrets for date
 	 * @return array
 	*/
-	public function getArretsForDates($date){
+	public function getArretsAndCategoriesForDates($date){
 	
 		global $wpdb;
 		
-		$list   = array();
-		$arrets = array();
+		$categories = array();
+		$arrets     = array();
+		$new        = array();
 		
 		// Find if we passed a single date or a range	
 		$when = ( is_array($date) ? ' BETWEEN "'.$date[0].'" AND "'.$date[1].'"' : ' = "'.$date.'"' );
@@ -79,21 +80,24 @@ class Nouveautes {
 		{
 			foreach ($listArrets as $arret) 
 			{
-				$arrets['id_nouveaute']          = $arret->id_nouveaute;
-				$arrets['datep_nouveaute']       = $arret->datep_nouveaute;
-				$arrets['dated_nouveaute']       = $arret->dated_nouveaute;
-				$arrets['categorie_nouveaute']   = $arret->categorie_nouveaute;
-				$arrets['nameCat']               = $arret->nameCat;
-				$arrets['nameSub']               = $arret->nameSub;
-				$arrets['link_nouveaute']        = $arret->link_nouveaute;
-				$arrets['numero_nouveaute']      = $arret->numero_nouveaute;
-				$arrets['publication_nouveaute'] = $arret->publication_nouveaute;
+				$new['id_nouveaute']          = $arret->id_nouveaute;
+				$new['datep_nouveaute']       = $arret->datep_nouveaute;
+				$new['dated_nouveaute']       = $arret->dated_nouveaute;
+				$new['categorie_nouveaute']   = $arret->categorie_nouveaute;
+				$new['nameCat']               = $arret->nameCat;
+				$new['nameSub']               = $arret->nameSub;
+				$new['link_nouveaute']        = $arret->link_nouveaute;
+				$new['numero_nouveaute']      = $arret->numero_nouveaute;
+				$new['publication_nouveaute'] = $arret->publication_nouveaute;
 				
-				$list[$arret->categorie_nouveaute][$arret->id_nouveaute] = $arrets;	
+				$arrets[$arret->categorie_nouveaute][$arret->id_nouveaute] = $new;	
+				
+				// categories list
+				$categories[$arret->categorie_nouveaute][$arret->id_nouveaute]['ispub'] = $arret->publication_nouveaute; 
 			}
 		}
 		
-		return $list;										  
+		return array( 'arrets' => $arrets , 'categories' => $categories );										  
 	}
 	
 	// Get 5 last week days

@@ -29,9 +29,25 @@ class NouveautesTest extends PHPUnit_Framework_TestCase
 			)
 		);
 				
-		$actual = $this->nouveaute->getArretsForDates($date);
+		$actual = $this->nouveaute->getArretsAndCategoriesForDates($date);
 		
-		$this->assertEquals($expect,$actual);	
+		$this->assertEquals($expect,$actual['arrets']);	
+		
+	}
+
+	public function testGetCategoriesList(){
+
+		$date   = '2014-04-13';
+				
+		$expect  = array(
+						174 => array(
+							1 => array('ispub' => 1)
+						)
+					);
+		
+		$actual = $this->nouveaute->getArretsAndCategoriesForDates($date);
+		
+		$this->assertEquals($expect,$actual['categories']);	
 		
 	}
 	

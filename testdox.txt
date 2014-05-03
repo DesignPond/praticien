@@ -24,6 +24,7 @@ Grab
 
 Nouveautes
  [x] Get arret list
+ [x] Get categories list
  [x] Is publication
  [x] Is not publication
  [x] Format keywords for search in arret
@@ -42,7 +43,7 @@ Update
 
 User
  [x] Get all user abos publication category
- [ ] Get all user abos
+ [x] Get all user abos
 
 Utils
  [x] Clean string simple
