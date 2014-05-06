@@ -50,8 +50,6 @@ class User {
 		global $wpdb;
 		
 		$userAbos = array();
-		
-		$currentdate  = date('Y-m-d');
 
 		$userAbosWithPub  = $this->getAllUserAbosPublicationCategory();
 	
@@ -61,10 +59,8 @@ class User {
 		{	
 			foreach($userKeywordsAbos as $user)
 			{		
-				// Test if user is valid
-				$valid = get_user_meta($user->refUser, 'date_abo_active', true);
-				
-				if($valid > $currentdate)
+				// Test if user is valid				
+				if( $this->validUserAbo($user->refUser) )
 				{	
 				
 					if(!empty($user->keywords))
@@ -76,12 +72,29 @@ class User {
 						$userAbos[$user->refUser][$user->refCategorie]['keywords'] = '';
 					}
 					
-					$userAbos[$user->refUser][$user->refCategorie]['ispub'] = (isset($userAbosWithPub[$user->refUser][$user->refCategorie]) ? $userAbosWithPub[$user->refUser][$user->refCategorie] : 0 );
+					$userAbos[$user->refUser][$user->refCategorie]['ispub'] = (isset($userAbosWithPub[$user->refUser][$user->refCategorie])?$userAbosWithPub[$user->refUser][$user->refCategorie]: 0 );
 				}
 			}
 		}
 		
 		return $userAbos;
+	}
+	
+	// find out if the user has a valid abo
+	public function validUserAbo($user_id){
+		
+		global $wpdb;
+						
+		$date  = date('Y-m-d');
+		
+		$valid = get_user_meta($user_id, 'date_abo_active', true);
+		
+		if($valid > $date)
+		{
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public function getAllUserAbosPublicationCategory(){

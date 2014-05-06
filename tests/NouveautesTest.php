@@ -71,15 +71,10 @@ class NouveautesTest extends PHPUnit_Framework_TestCase
 		);
 		
 		$expect = array( 1 => 
-					array( 174 => ''  ) 
+			array( 0 => array( 1 => '' ) ) 
 		);
 				
 		$actual = $this->nouveaute->assignArretsUsers($users, $arrets);		
-		
-		echo '<pre>';
-		print_r($actual);
-		echo '</pre>';
-		exit();
 		
 		$this->assertEquals($expect,$actual);	
 		
@@ -148,8 +143,8 @@ class NouveautesTest extends PHPUnit_Framework_TestCase
 	public function testDispatchIsPubArretByKeywordFound(){
 			
 		$arrets = array(
-			1 => array('publication_nouveaute' => 1),
-			2 => array('publication_nouveaute' => 0)  
+			1 => array('id_nouveaute' => 1 , 'publication_nouveaute' => 1),
+			2 => array('id_nouveaute' => 2 ,'publication_nouveaute' => 0)  
 		);
 		
 		$keywords = array('"quam volutpat molestie"' , 'volutpat');
@@ -167,15 +162,15 @@ class NouveautesTest extends PHPUnit_Framework_TestCase
 	public function testDispatchIsPubArretByKeywordButNotFound(){
 			
 		$arrets = array(
-			1 => array('publication_nouveaute' => 0),
-			2 => array('publication_nouveaute' => 1)  
+			1 => array('id_nouveaute' => 1 ,'publication_nouveaute' => 0),
+			2 => array('id_nouveaute' => 2 ,'publication_nouveaute' => 1)  
 		);
 		
 		$keywords = array('"quam volutpat molestie"' , 'volutpat');
 		
 		$isPub  = 1;
 		
-		$expect = array(2 => '');
+		$expect = array();
 				
 		$actual = $this->nouveaute->dispatchArretWithKeyword($arrets , $keywords , $isPub);
 		
@@ -186,15 +181,15 @@ class NouveautesTest extends PHPUnit_Framework_TestCase
 	public function testDispatchIsPubArretByKeywordButNotAllFound(){
 
 		$arrets = array(
-			1 => array('publication_nouveaute' => 0),
-			2 => array('publication_nouveaute' => 0)  
+			1 => array('id_nouveaute' => 1 ,'publication_nouveaute' => 0),
+			2 => array('id_nouveaute' => 2 ,'publication_nouveaute' => 0)  
 		);
 		
 		$keywords = array('"quam volutpat molestie"' , 'volutpat');
 		
 		$isPub  = 0;
 		
-		$expect = array( 1 => '"quam volutpat molestie",volutpat' , 2 => '');
+		$expect = array( 1 => '"quam volutpat molestie",volutpat');
 				
 		$actual = $this->nouveaute->dispatchArretWithKeyword($arrets , $keywords , $isPub);
 		
@@ -204,8 +199,8 @@ class NouveautesTest extends PHPUnit_Framework_TestCase
 	public function testDispatchArretIsPubNoKeywords(){
 
 		$arrets = array(
-			1 => array('publication_nouveaute' => 1),
-			2 => array('publication_nouveaute' => 0)  
+			1 => array('id_nouveaute' => 1 ,'publication_nouveaute' => 1),
+			2 => array('id_nouveaute' => 2 ,'publication_nouveaute' => 0)  
 		);
 		
 		$isPub  = 1;
@@ -220,8 +215,8 @@ class NouveautesTest extends PHPUnit_Framework_TestCase
 	public function testDispatchhArretNoKeywords(){
 
 		$arrets = array(
-			1 => array('publication_nouveaute' => 0),
-			2 => array('publication_nouveaute' => 0)  
+			1 => array('id_nouveaute' => 1 ,'publication_nouveaute' => 0),
+			2 => array('id_nouveaute' => 2 ,'publication_nouveaute' => 0)  
 		);
 		
 		$isPub  = 0;
@@ -232,5 +227,31 @@ class NouveautesTest extends PHPUnit_Framework_TestCase
 				
 		$this->assertEquals($expect,$actual);
 	}
+		
+	public function testCleanUserArray(){
+	
+		$users = array(
+			1 => array(
+	            0 => array(3 => '' , 4 => ''),
+	            1 => array(1 => '' , 2 => ''),
+	            2 => array(1 => 'Lorem')		
+		    )
+		);
+		
+		$expect = array(
+			1 => array(
+				1 => 'Lorem', 
+				2 => '', 
+				3 => '', 
+				4 => ''
+			)
+		);
+		
+		$actual = $this->nouveaute->cleanEachUser($users);
+		
+		$this->assertEquals($expect,$actual);		
+		
+	}
+		
 				
 }

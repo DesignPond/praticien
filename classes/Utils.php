@@ -18,6 +18,12 @@ class Utils{
 	    return $ret_array;
 	}
 	
+	public function groupArray($array){
+	
+		return call_user_func_array('array_merge', $array);
+
+	}
+	
 	// Test if the string is the same
 	public function percent($category,$string){
 	

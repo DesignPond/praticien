@@ -129,20 +129,23 @@ class Nouveautes {
 		
 		if(!empty($arrets))
 		{		
-			foreach($arrets as $id => $arret)
+			foreach($arrets as $arret)
 			{				
 				// Test if is pub or/and keywords found				
 				if( ($isPub && $this->isPub($arret)) || !$isPub )
-				{
-					$result = $this->arretsInSearch($keywords,$id);
-					
-					if(!empty($result) && $keywords)
+				{					
+					if($keywords)
 					{
-						$listIds[$id] = $result;
+						$result = $this->arretsInSearch($keywords,$arret['id_nouveaute']);
+						
+						if(!empty($result))
+						{
+							$listIds[$arret['id_nouveaute']] = $result;
+						}
 					}
 					else
 					{
-						$listIds[$id] = NULL;
+						$listIds[$arret['id_nouveaute']] = NULL;
 					}		
 				}
 			}
@@ -167,15 +170,20 @@ class Nouveautes {
 					
 				// Categorie general 		
 				if($idCat == 247)
-				{
-					// search in all arrets but only arrets and not the category key => flatten the array
-					$listArrets = $this->dispatchArretWithKeyword($arrets, $keywords , $isPub);
-						
-					if(!empty($listArrets))
-					{
-						$userArrets[$user] = $listArrets;
-					}
+				{										
+					$list = $this->utils->groupArray($arrets);
 					
+					// keywords are not optional here!!
+					if($keywords)
+					{
+						// search in all arrets but only arrets and not the category key => flatten the array
+						$listArrets = $this->dispatchArretWithKeyword($list, $keywords , $isPub);
+											
+						if(!empty($listArrets))
+						{
+							$userArrets[$user][] = $listArrets;
+						}
+					}
 				}
 				else
 				{
@@ -184,15 +192,13 @@ class Nouveautes {
 					{
 						// Get list of arrets for current category
 						$list = $arrets[$idCat];
-						
-						$list = $this->utils->flattenArray($list);
-						
+					
 						// search in arrets
 						$listArrets = $this->dispatchArretWithKeyword($list, $keywords , $isPub);
 							
 						if(!empty($listArrets))
 						{
-							$userArrets[$user] = $listArrets;
+							$userArrets[$user][] = $listArrets;
 						}		
 					}
 				}
@@ -202,6 +208,32 @@ class Nouveautes {
 		
 		return $userArrets;
 	}	
+		
+	public function cleanEachUser($users){
+	
+		$cleaned = array();
+		
+		if(!empty($users))
+		{			
+			foreach($users as $user_id => $user)
+			{
+				foreach($user as $arret)
+				{
+					foreach($arret as $id => $keyword)
+					{
+						// already keywords
+						
+						$word = ( !empty($cleaned[$user_id][$id]) ? ';'.$cleaned[$user_id][$id] : '' );
+						
+						$cleaned[$user_id][$id] = $keyword.$word;
+					}
+				}
+			}
+		}
+		
+		return $cleaned;
+		
+	}
 	
 	/*
 	* Utils
