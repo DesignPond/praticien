@@ -46,6 +46,11 @@ class Nouveautes {
 		$this->special = array('LLCA','BGFA');
 
 	}
+
+	
+	/*============================================
+	  Main functions
+	============================================*/
 	
 	/*
 	 * Get all arrets for date
@@ -122,38 +127,6 @@ class Nouveautes {
 		
 		return $range;
 	}
-
-	public function dispatchArretWithKeyword($arrets , $keywords = NULL, $isPub = NULL){
-		
-		$listIds = array();
-		
-		if(!empty($arrets))
-		{		
-			foreach($arrets as $arret)
-			{				
-				// Test if is pub or/and keywords found				
-				if( ($isPub && $this->isPub($arret)) || !$isPub )
-				{					
-					if($keywords)
-					{
-						$result = $this->arretsInSearch($keywords,$arret['id_nouveaute']);
-						
-						if(!empty($result))
-						{
-							$listIds[$arret['id_nouveaute']] = $result;
-						}
-					}
-					else
-					{
-						$listIds[$arret['id_nouveaute']] = NULL;
-					}		
-				}
-			}
-		}
-		
-		return $listIds;
-	}
-
 	
 	public function assignArretsUsers($users, $arrets){
 		
@@ -208,6 +181,68 @@ class Nouveautes {
 		
 		return $userArrets;
 	}	
+	
+	/*============================================
+	  Inside functions
+	============================================*/
+
+	public function dispatchArretWithKeyword($arrets , $keywords = NULL, $isPub = NULL){
+		
+		$listIds = array();
+		
+		if(!empty($arrets))
+		{		
+			foreach($arrets as $arret)
+			{				
+				// Test if is pub or/and keywords found				
+				if( ($isPub && $this->isPub($arret)) || !$isPub )
+				{					
+					if($keywords)
+					{
+						$result = $this->arretsInSearch($keywords,$arret['id_nouveaute']);
+						
+						if(!empty($result))
+						{
+							$listIds[$arret['id_nouveaute']] = $result;
+						}
+					}
+					else
+					{
+						$listIds[$arret['id_nouveaute']] = NULL;
+					}		
+				}
+			}
+		}
+		
+		return $listIds;
+	}	
+	
+	/**
+	 * Utils
+	*/
+	
+	public function isPub($arret){
+	
+		$isPub = ( $arret['publication_nouveaute'] ? true : false );
+		
+		return $isPub;
+	}
+
+	public function listIdArretsCategorie($categorie){
+		
+		$ids = array();
+		
+		if( !empty($categorie) )
+		{
+		   foreach($categorie as $arret)
+		   {
+		  	  $ids[] = $arret['id_nouveaute'];
+ 		   }
+		}
+		
+		return $ids;
+	}
+	
 		
 	public function cleanEachUser($users){
 	
@@ -233,32 +268,6 @@ class Nouveautes {
 		
 		return $cleaned;
 		
-	}
-	
-	/*
-	* Utils
-	*
-	*/
-	public function isPub($arret){
-	
-		$isPub = ( $arret['publication_nouveaute'] ? true : false );
-		
-		return $isPub;
-	}
-
-	public function listIdArretsCategorie($categorie){
-		
-		$ids = array();
-		
-		if( !empty($categorie) )
-		{
-		   foreach($categorie as $arret)
-		   {
-		  	  $ids[] = $arret['id_nouveaute'];
- 		   }
-		}
-		
-		return $ids;
 	}
 	
 	// keywords is array of strings 

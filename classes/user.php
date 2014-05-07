@@ -45,6 +45,10 @@ class User {
 
 	}
 	
+	/*============================================
+	  Main functions
+	============================================*/
+	
 	public function getUserAbos($when){
 					
 		global $wpdb;
@@ -80,7 +84,12 @@ class User {
 		return $userAbos;
 	}
 	
+	/*============================================
+	  Inside functions
+	============================================*/
+	
 	// find out if the user has a valid abo
+	// Used in getUserAbos
 	public function validUserAbo($user_id){
 		
 		global $wpdb;
@@ -97,6 +106,8 @@ class User {
 		return false;
 	}
 	
+	
+	// Used in getUserAbos
 	public function getAllUserAbosPublicationCategory(){
 	
 		global $wpdb;
@@ -104,7 +115,7 @@ class User {
 		$userAbosWithPub = array();
 		
 		// Get user categories and pub
-		$abosPub  = $wpdb->get_results('SELECT * FROM '.$this->abo_pub_table.'');			
+		$abosPub = $wpdb->get_results('SELECT * FROM '.$this->abo_pub_table.'');			
 		
 		if( !empty($abosPub) )
 		{
@@ -117,6 +128,7 @@ class User {
 		return $userAbosWithPub;		
 	}
 	
+	// Used in getUserAbos
 	public function getAllUserAbosRythme($when){
 	
 		global $wpdb;
